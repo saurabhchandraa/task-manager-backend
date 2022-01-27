@@ -1,5 +1,10 @@
 package com.taskmanagerbackend;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TaskDto {
 
     private Integer id;

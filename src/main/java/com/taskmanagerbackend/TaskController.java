@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -27,10 +28,13 @@ public class TaskController {
     ResponseEntity<List<TaskDto>> searchTasksByPriority(@PathVariable int priority)
     {
         List<TaskEntity>  entityList = taskService.searchTasksByPriority(priority);
-        List<TaskDto> dtoList = new ArrayList<>();
-        for(TaskEntity entity: entityList) {
-            TaskDto dto = mapper.toTaskDto(entity);
-        }
+
+        List<TaskDto> dtoList = entityList.stream().map(mapper::toTaskDto).collect(Collectors.toList());
+//        List<TaskDto> dtoList = new ArrayList<>();
+//        for(TaskEntity entity: entityList) {
+//            TaskDto dto = mapper.toTaskDto(entity);
+//            dtoList.add(dto);
+//        }
 
         return ResponseEntity.status(HttpStatus.OK).body(dtoList);
     }
@@ -45,7 +49,7 @@ public class TaskController {
         TaskEntity entityResponse = taskService.addTask(taskEntity);
 
         location = request.getRequestURI() + "/"+entityResponse.getId();
-        responseBody = String.format("{\"id\"entity.getId())");
+        responseBody = String.format("{\"id\":%d}" ,taskEntity.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).header(location).body(responseBody);
     }
